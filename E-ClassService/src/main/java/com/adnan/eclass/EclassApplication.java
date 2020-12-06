@@ -1,4 +1,4 @@
-package com.example.eclass;
+package com.adnan.eclass;
 
 import org.apache.maven.model.Model;
 import java.io.FileReader;

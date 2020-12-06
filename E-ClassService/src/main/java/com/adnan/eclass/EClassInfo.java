@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.example.eclass;
+package com.adnan.eclass;
 
 import java.util.List;
 
@@ -11,11 +11,19 @@ import java.util.List;
  *
  * @author ASUS
  */
-public class EClass {
+public class EClassInfo {
     
     private Long id;
     private String class_name;
     private List<Student> students;
+    private List<Course> courses;
+    
+    public EClassInfo(Long id, String class_name, List<Student> students, List<Course> courses) {
+        this.id = id;
+        this.class_name = class_name;
+        this.students = students;
+        this.courses = courses;
+    }
 
     public Long getId() {
         return id;
@@ -39,6 +47,14 @@ public class EClass {
 
     public void setStudents(List<Student> students) {
         this.students = students;
-    }    
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
     
 }

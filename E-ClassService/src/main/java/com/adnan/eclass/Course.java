@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adnan.courseService;
+package com.adnan.eclass;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  * @author ASUS
  */
 public class Course {
-
+    
     private Long id;
     private String title;
     private String description;

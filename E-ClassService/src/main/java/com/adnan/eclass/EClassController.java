@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.example.eclass;
+package com.adnan.eclass;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,15 +31,21 @@ public class EClassController {
     private RestTemplate restTemplate;
 
     @GetMapping("/{name}")
-    public List<Student> getClassStudents(@RequestParam("name") String name) {
+    public EClassInfo getByName(@RequestParam("name") String name) {
         EClass eclass = classes.stream().filter(it -> it.getClass_name().equals(name)).findFirst().get();
-        return eclass.getStudents();
-    }
-    
-    @GetMapping("/withCourses/{name}")
-    public List<Student> getClassStudentsCourses(@RequestParam("name") String name) {
-        EClass eclass = classes.stream().filter(it -> it.getClass_name().equals(name)).findFirst().get();
-        return eclass.getStudents();
+        List<Student> students = eclass.getStudent_id().stream()
+                .map(id -> {
+                    Student student = restTemplate.getForObject("http://student-service/students/" + id, Student.class);
+                    return student;
+                })
+                .collect(Collectors.toList());
+        List<Course> courses = eclass.getCourse_id().stream()
+                .map(id -> {
+                    Course course = restTemplate.getForObject("http://course-service/courses/" + id, Course.class);
+                    return course;
+                })
+                .collect(Collectors.toList());
+        return new EClassInfo(eclass.getId(), eclass.getClass_name(), students, courses);
     }
 
     @PostMapping
@@ -47,5 +54,5 @@ public class EClassController {
         classes.add(ec);
         return ec;
     }
-    
+
 }
