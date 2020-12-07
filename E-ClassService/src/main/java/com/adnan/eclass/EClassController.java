@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  *
@@ -26,28 +25,29 @@ import org.springframework.web.client.RestTemplate;
 public class EClassController {
 
     private List<EClass> classes = new ArrayList<>();
-
+    
     @Autowired
-    private RestTemplate restTemplate;
+    StudentInfo studentInfo;
+    
+    @Autowired
+    CourseInfo courseInfo;
 
     @GetMapping("/{name}")
     public EClassInfo getByName(@RequestParam("name") String name) {
         EClass eclass = classes.stream().filter(it -> it.getClass_name().equals(name)).findFirst().get();
         List<Student> students = eclass.getStudent_id().stream()
                 .map(id -> {
-                    Student student = restTemplate.getForObject("http://student-service/students/" + id, Student.class);
-                    return student;
+                    return studentInfo.getStudent(id);
                 })
                 .collect(Collectors.toList());
         List<Course> courses = eclass.getCourse_id().stream()
                 .map(id -> {
-                    Course course = restTemplate.getForObject("http://course-service/courses/" + id, Course.class);
-                    return course;
+                    return courseInfo.getCourse(id);
                 })
                 .collect(Collectors.toList());
-        return new EClassInfo(eclass.getId(), eclass.getClass_name(), students, courses);
+        return new EClassInfo(eclass.getId(), name, students, courses);
     }
-
+    
     @PostMapping
     public EClass add(@RequestBody EClass ec) {
         ec.setId((long) (classes.size() + 1));
